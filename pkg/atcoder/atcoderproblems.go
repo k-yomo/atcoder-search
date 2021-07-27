@@ -21,6 +21,12 @@ func NewAtCoderProblemsClient(httpClient *http.Client) *AtCoderProblemsClient {
 // Problem represents AtCoder's problem metadata
 type Problem struct {
 	ID        string `json:"id"`
+	ContestID string `json:"contestId"`
+	Title     string `json:"title"`
+}
+
+type atcoderProblemsProblemRes struct {
+	ID        string `json:"id"`
 	ContestID string `json:"contest_id"`
 	Title     string `json:"title"`
 }
@@ -41,11 +47,19 @@ func (a *AtCoderProblemsClient) GetAllProblems(ctx context.Context) ([]*Problem,
 		if err != nil {
 			return nil, err
 		}
-		return nil, fmt.Errorf("failed to get problems, status: %d, body: %s",res.StatusCode, bodyBytes)
+		return nil, fmt.Errorf("failed to get resProblems, status: %d, body: %s",res.StatusCode, bodyBytes)
 	}
-	var problems []*Problem
-	if err := json.NewDecoder(res.Body).Decode(&problems); err != nil {
+	var resProblems []*atcoderProblemsProblemRes
+	if err := json.NewDecoder(res.Body).Decode(&resProblems); err != nil {
 		return nil, err
+	}
+	problems := make([]*Problem, 0, len(resProblems))
+	for _, p := range resProblems {
+		problems = append(problems, &Problem{
+			ID:        p.ID,
+			ContestID: p.ContestID,
+			Title:     p.Title,
+		})
 	}
 	return problems, nil
 }

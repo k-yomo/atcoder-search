@@ -37,16 +37,17 @@ func NewTestCaseClient(dropboxToken string, logger *zap.Logger) *TestCaseClient 
 
 // TestCase represents AtCoder's problem testcase
 type TestCase struct {
-	ContestID string
-	ProblemID string
-	FileName  string
-	In        string
-	Out       string
+	ContestID         string `json:"contestId"`
+	ProblemID         string `json:"problemId"`
+	ContestFolderName string `json:"contestFolderName"`
+	FileName          string `json:"fileName"`
+	In                string `json:"in"`
+	Out               string `json:"out"`
 }
 
 type DownloadTestCasesParams struct {
-	// SkipContestIDs is the list of content id to skip fetching
-	SkipContestIDs []string
+	// SkipContestFolderNames is the list of content folder name to skip fetching
+	SkipContestFolderNames []string
 	// Limit is fetching contest count limit. if limit is 0, it fetches all.
 	Limit int
 }
@@ -55,9 +56,9 @@ func (c *TestCaseClient) DownloadTestCases(ctx context.Context, params *Download
 	if params == nil {
 		params = &DownloadTestCasesParams{}
 	}
-	alreadyDownloadedContestIDMap := make(map[string]bool)
-	for _, id := range params.SkipContestIDs {
-		alreadyDownloadedContestIDMap[id] = true
+	skipContestFolderNames := make(map[string]bool)
+	for _, id := range params.SkipContestFolderNames {
+		skipContestFolderNames[id] = true
 	}
 
 	result, err := c.dropboxFilesTestCaseClient.ListFolder(&files.ListFolderArg{
@@ -73,19 +74,18 @@ func (c *TestCaseClient) DownloadTestCases(ctx context.Context, params *Download
 	count := 0
 	for _, entry := range result.Entries {
 		contestFolder := entry.(*files.FolderMetadata)
-		contestID := contestFolder.Name
-		if alreadyDownloadedContestIDMap[contestID] {
-			c.logInfo(fmt.Sprintf("Skkipped contest '%s'", contestID))
+		if skipContestFolderNames[contestFolder.Name] {
+			c.logInfo(fmt.Sprintf("Skkipped contest '%s'", contestFolder.Name))
 			continue
 		}
 
-		contestTestCases, err := c.DownloadContestTestCases(ctx, contestID)
+		contestTestCases, err := c.DownloadContestTestCases(ctx, contestFolder.Name)
 		if err != nil {
 			return nil, err
 		}
 		testCases = append(testCases, contestTestCases...)
 
-		c.logInfo(fmt.Sprintf("Finished fetching test cases for '%s'", contestID), zap.Int("testcaseCount", len(testCases)))
+		c.logInfo(fmt.Sprintf("Finished fetching test cases for '%s'", contestFolder.Name), zap.Int("testcaseCount", len(testCases)))
 
 		count += 1
 		if params.Limit > 0 && count == params.Limit {
@@ -95,9 +95,9 @@ func (c *TestCaseClient) DownloadTestCases(ctx context.Context, params *Download
 	return testCases, err
 }
 
-func (c *TestCaseClient) DownloadContestTestCases(ctx context.Context, contestID string) ([]*TestCase, error) {
+func (c *TestCaseClient) DownloadContestTestCases(ctx context.Context, contestFolderName string) ([]*TestCase, error) {
 	result, err := c.dropboxFilesTestCaseClient.ListFolder(&files.ListFolderArg{
-		Path:       fmt.Sprintf("/%s", contestID),
+		Path:       fmt.Sprintf("/%s", contestFolderName),
 		SharedLink: files.NewSharedLink(dropboxTestCasesURL),
 	})
 	if err != nil {
@@ -106,22 +106,22 @@ func (c *TestCaseClient) DownloadContestTestCases(ctx context.Context, contestID
 	var testCases []*TestCase
 	for _, entry := range result.Entries {
 		problemFolder := entry.(*files.FolderMetadata)
-		problemTestCases, err := c.downloadProblemTestCases(ctx, contestID, problemFolder.Name)
+		problemTestCases, err := c.downloadProblemTestCases(ctx, contestFolderName, problemFolder.Name)
 		if err != nil {
 			return nil, err
 		}
-		c.logInfo(fmt.Sprintf("Finished to fetch testcases for '%s'", fmt.Sprintf("%s/%s", contestID, problemFolder.Name)), zap.Int("testcaseCount", len(problemTestCases)))
+		c.logInfo(fmt.Sprintf("Finished to fetch testcases for '%s'", fmt.Sprintf("%s/%s", contestFolderName, problemFolder.Name)), zap.Int("testcaseCount", len(problemTestCases)))
 		testCases = append(testCases, problemTestCases...)
 	}
 	return testCases, nil
 }
 
-func (c *TestCaseClient) downloadProblemTestCases(ctx context.Context, contestID string, problemFolderName string) ([]*TestCase, error) {
+func (c *TestCaseClient) downloadProblemTestCases(ctx context.Context, contestFolderName string, problemFolderName string) ([]*TestCase, error) {
 	eg, ctx := errgroup.WithContext(ctx)
 	var inFiles, outFiles []*TestCaseFile
 	eg.Go(func() error {
 		var err error
-		inFiles, err = c.downloadFiles(fmt.Sprintf("/%s/%s/in", contestID, problemFolderName))
+		inFiles, err = c.downloadFiles(fmt.Sprintf("/%s/%s/in", contestFolderName, problemFolderName))
 		// sometimes there is no in/out folders in the problem folder
 		if isErrorNotFolderFound(err) {
 			return nil
@@ -130,7 +130,7 @@ func (c *TestCaseClient) downloadProblemTestCases(ctx context.Context, contestID
 	})
 	eg.Go(func() error {
 		var err error
-		outFiles, err = c.downloadFiles(fmt.Sprintf("/%s/%s/out", contestID, problemFolderName))
+		outFiles, err = c.downloadFiles(fmt.Sprintf("/%s/%s/out", contestFolderName, problemFolderName))
 		// sometimes there is no in/out folders in the problem folder
 		if isErrorNotFolderFound(err) {
 			return nil
@@ -144,10 +144,11 @@ func (c *TestCaseClient) downloadProblemTestCases(ctx context.Context, contestID
 	testCaseMap := make(map[string]*TestCase)
 	for _, in := range inFiles {
 		testCaseMap[in.FileName] = &TestCase{
-			ContestID: contestID,
-			ProblemID: buildProblemID(contestID, problemFolderName),
-			FileName:  in.FileName,
-			In:        in.Content,
+			ContestID:         strings.ToLower(contestFolderName),
+			ContestFolderName: contestFolderName,
+			ProblemID:         BuildProblemID(contestFolderName, problemFolderName),
+			FileName:          in.FileName,
+			In:                in.Content,
 		}
 	}
 	for _, out := range outFiles {
@@ -155,7 +156,7 @@ func (c *TestCaseClient) downloadProblemTestCases(ctx context.Context, contestID
 		if testCase, ok := testCaseMap[out.FileName]; ok {
 			testCase.Out = out.Content
 		} else {
-			c.logInfo(fmt.Sprintf("in file is not found for out '%s'", fmt.Sprintf("%s/%s/%s", contestID, problemFolderName, out.FileName)))
+			c.logInfo(fmt.Sprintf("in file is not found for out '%s'", fmt.Sprintf("%s/%s/%s", contestFolderName, problemFolderName, out.FileName)))
 		}
 	}
 
@@ -226,12 +227,11 @@ func (c *TestCaseClient) logInfo(msg string, fields ...zap.Field) {
 	}
 }
 
-func buildProblemID(contestID string, problemFileName string) string {
-	return fmt.Sprintf("%s_%s", contestID, strings.ToLower(problemFileName))
+func BuildProblemID(contestID string, problemFileName string) string {
+	return strings.ToLower(fmt.Sprintf("%s_%s", contestID, problemFileName))
 }
 
 func isErrorNotFolderFound(err error) bool {
 	apiErr, ok := errors.Unwrap(err).(files.ListFolderAPIError)
 	return ok && apiErr.EndpointError.Tag == files.ListFolderErrorPath
 }
-

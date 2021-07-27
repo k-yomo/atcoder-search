@@ -64,12 +64,12 @@ func TestTestCaseClient_DownloadTestCases(t *testing.T) {
 							return &files.ListFolderResult{
 								Entries: []files.IsMetadata{
 									&files.FolderMetadata{
-										Metadata: files.Metadata{Name: "APG4b"},
+										Metadata: files.Metadata{Name: "ABC100"},
 									},
 								},
 								HasMore: false,
 							}, nil
-						} else if arg.Path == "/APG4b" {
+						} else if arg.Path == "/ABC100" {
 							return &files.ListFolderResult{
 								Entries: []files.IsMetadata{
 									&files.FolderMetadata{Metadata: files.Metadata{Name: "A"}},
@@ -77,14 +77,14 @@ func TestTestCaseClient_DownloadTestCases(t *testing.T) {
 								},
 								HasMore: false,
 							}, nil
-						} else if arg.Path == "/APG4b/A/in" || arg.Path == "/APG4b/A/out" {
+						} else if arg.Path == "/ABC100/A/in" || arg.Path == "/ABC100/A/out" {
 							return &files.ListFolderResult{
 								Entries: []files.IsMetadata{
 									&files.FileMetadata{Metadata: files.Metadata{Name: "001.txt"}},
 								},
 								HasMore: true,
 							}, nil
-						} else if arg.Path == "/APG4b/B/in" || arg.Path == "/APG4b/B/out" {
+						} else if arg.Path == "/ABC100/B/in" || arg.Path == "/ABC100/B/out" {
 							return &files.ListFolderResult{
 								Entries: []files.IsMetadata{
 									&files.FileMetadata{Metadata: files.Metadata{Name: "003.txt"}},
@@ -115,25 +115,28 @@ func TestTestCaseClient_DownloadTestCases(t *testing.T) {
 			want:
 			[]*TestCase{
 				{
-					ContestID: "APG4b",
-					ProblemID: "APG4b_a",
-					FileName:  "001.txt",
-					In:        "1 2 3",
-					Out:       "1 2 3",
+					ContestID:         "abc100",
+					ProblemID:         "abc100_a",
+					ContestFolderName: "ABC100",
+					FileName:          "001.txt",
+					In:                "1 2 3",
+					Out:               "1 2 3",
 				},
 				{
-					ContestID: "APG4b",
-					ProblemID: "APG4b_a",
-					FileName:  "002.txt",
-					In:        "1 2 3",
-					Out:       "1 2 3",
+					ContestID:         "abc100",
+					ProblemID:         "abc100_a",
+					ContestFolderName: "ABC100",
+					FileName:          "002.txt",
+					In:                "1 2 3",
+					Out:               "1 2 3",
 				},
 				{
-					ContestID: "APG4b",
-					ProblemID: "APG4b_b",
-					FileName:  "003.txt",
-					In:        "1 2 3",
-					Out:       "1 2 3",
+					ContestID:         "abc100",
+					ProblemID:         "abc100_b",
+					ContestFolderName: "ABC100",
+					FileName:          "003.txt",
+					In:                "1 2 3",
+					Out:               "1 2 3",
 				},
 			},
 		},
@@ -147,16 +150,16 @@ func TestTestCaseClient_DownloadTestCases(t *testing.T) {
 						if arg.Path == "" {
 							return &files.ListFolderResult{
 								Entries: []files.IsMetadata{
-									&files.FolderMetadata{Metadata: files.Metadata{Name: "APG4b"}},
+									&files.FolderMetadata{Metadata: files.Metadata{Name: "ABC100"}},
 								},
 							}, nil
-						} else if arg.Path == "/APG4b" {
+						} else if arg.Path == "/ABC100" {
 							return &files.ListFolderResult{
 								Entries: []files.IsMetadata{
 									&files.FolderMetadata{Metadata: files.Metadata{Name: "Empty"}},
 								},
 							}, nil
-						} else if arg.Path == "/APG4b/Empty/in" || arg.Path == "/APG4b/Empty/out" {
+						} else if arg.Path == "/ABC100/Empty/in" || arg.Path == "/ABC100/Empty/out" {
 							return nil, files.ListFolderAPIError{
 								EndpointError: &files.ListFolderError{Tagged: dropbox.Tagged{
 									Tag: files.ListFolderErrorPath,
