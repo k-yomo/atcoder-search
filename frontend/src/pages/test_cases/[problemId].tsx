@@ -38,11 +38,14 @@ export default memo(function TestCasePage({ problemId }: Props) {
 
   useEffect(() => {
     fetch(
-      `https://storage.googleapis.com/atcoder-test-cases/${problemId}.json`,
+      `https://storage.googleapis.com/atcoder-test-cases/${problemId}.json.gz`,
       {
         method: 'GET',
         mode: 'cors',
         cache: 'force-cache',
+        headers: {
+          'Accept-Encoding': 'gzip',
+        },
       }
     ).then((res) => {
       res.json().then((data) => {
