@@ -61,10 +61,10 @@ export default memo(function TestCasePage({ problemId }: Props) {
         <title>{problemId} テストケース - AtCoder Search</title>
         <meta name="description" content={`${problemId}のテストケース`} />
       </Head>
-      <div className="bg-gray-50">
-        {loading ? (
-          <PageLoading />
-        ) : (
+      {loading ? (
+        <PageLoading />
+      ) : (
+        <div className="bg-gray-50">
           <div className="max-w-[1200px] p-4 mx-auto">
             <h1 className="mb-4 text-3xl text-black">{problemId}</h1>
             <div className="space-y-4">
@@ -73,8 +73,8 @@ export default memo(function TestCasePage({ problemId }: Props) {
               ))}
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </>
   );
 });
