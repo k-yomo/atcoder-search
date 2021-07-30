@@ -11,11 +11,16 @@ interface Props {
 
 export default memo(function TestCaseCard({ testCase }: Props) {
   return (
-    <div key={testCase.fileName} className="p-4 bg-white round-md">
-      <h3 className="text-xl text-black">{testCase.fileName}</h3>
+    <div
+      key={testCase.fileName}
+      className="p-4 bg-white dark:bg-gray-900 round-md"
+    >
+      <h3 className="text-xl text-black dark:text-white">
+        {testCase.fileName}
+      </h3>
       <div className="mt-3">
         <div className="flex items-center">
-          <h4 className="w-7 mr-2 text-md text-black">IN</h4>
+          <h4 className="w-7 mr-2 text-md">IN</h4>
           <ClipboardCopyButton text={testCase.in} />
           <DownloadTextButton
             fileName={`${testCase.problemId}_in_${testCase.fileName}`}
@@ -29,7 +34,7 @@ export default memo(function TestCaseCard({ testCase }: Props) {
       </div>
       <div className="mt-3">
         <div className="flex items-center">
-          <h4 className="w-7 mr-2 text-md text-black">OUT</h4>
+          <h4 className="w-7 mr-2 text-md">OUT</h4>
           <ClipboardCopyButton text={testCase.out} />
           <DownloadTextButton
             fileName={`${testCase.problemId}_out_${testCase.fileName}`}

@@ -38,7 +38,7 @@ export default function TestCaseListPage() {
         <meta name="description" content="AtCoderのテストケース一覧ページ" />
       </Head>
       <div className="m-4">
-        <h1 className="text-3xl text-black">Test Cases</h1>
+        <h1 className="text-3xl text-black dark:text-white">Test Cases</h1>
         <div className="my-4 max-w-xl w-full lg:max-w-lg">
           <label htmlFor="search" className="sr-only">
             Search
@@ -49,7 +49,7 @@ export default function TestCaseListPage() {
             </div>
             <input
               id="search"
-              className="block w-full bg-white py-3 pl-10 pr-3 border border-gray-300 rounded-sm leading-5 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-black focus:ring-white focus:border-white"
+              className="block w-full bg-white py-3 pl-10 pr-3 dark:bg-gray-800 border border-gray-700 rounded-sm leading-5 text-gray-900 dark:text-gray-300 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-gray-400"
               placeholder="Search"
               type="search"
               name="search"

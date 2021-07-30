@@ -67,9 +67,11 @@ export default memo(function TestCasePage({ problemId }: Props) {
       {loading ? (
         <PageLoading />
       ) : (
-        <div className="bg-gray-50">
+        <div className="bg-gray-50 dark:bg-black">
           <div className="max-w-[1200px] p-4 mx-auto">
-            <h1 className="mb-4 text-3xl text-black">{problemId}</h1>
+            <h1 className="mb-4 text-3xl text-black dark:text-white">
+              {problemId}
+            </h1>
             <div className="space-y-4">
               {testCases.map((testCase) => (
                 <TestCaseCard key={testCase.fileName} testCase={testCase} />
