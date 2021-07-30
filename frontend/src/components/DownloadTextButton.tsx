@@ -29,13 +29,13 @@ export default memo(function DownloadTextButton({ fileName, text }: Props) {
     <button
       type="button"
       onClick={onClickDownload}
-      className="inline-flex items-center px-2 py-1 border-none border-transparent shadow-sm text-sm leading-4 font-medium rounded-sm hover:bg-violet-100"
+      className="inline-flex items-center px-2 py-1 border-none border-transparent shadow-sm text-sm leading-4 font-medium rounded-sm hover:bg-violet-100 dark:hover:bg-violet-800"
     >
       <DownloadIcon
         className="-ml-0.5 mr-1 h-4 w-4 text-violet-500"
         aria-hidden="true"
       />
-      <span className="text-gray-600">DOWNLOAD</span>
+      <span className="text-gray-600 dark:text-gray-300">DOWNLOAD</span>
     </button>
   );
 });

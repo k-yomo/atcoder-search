@@ -20,8 +20,8 @@ export default memo(function ProblemList({ problems }: Props) {
       <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
         <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
           <div className="shadow overflow-hidden border-b border-gray-100 rounded-sm">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+            <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+              <thead className="bg-gray-50 dark:bg-black">
                 <tr>
                   <th
                     scope="col"
@@ -36,7 +36,9 @@ export default memo(function ProblemList({ problems }: Props) {
                   ([contestId, problems], i) => (
                     <tr
                       key={problems[0].contestId}
-                      className={i % 2 === 0 ? 'bg-white' : 'bg-gray-50'}
+                      className={
+                        i % 2 === 0 ? '' : 'bg-gray-50 dark:bg-gray-900'
+                      }
                     >
                       <td className="px-6 py-4 whitespace-nowrap text-sm">
                         {contestId.toUpperCase()}

@@ -5,7 +5,7 @@ export default memo(function EllipsizedTextWarning() {
   return (
     <div className="flex items-center">
       <ExclamationCircleIcon className="h-4 w-4 mr-1 text-amber-500" />
-      <span className="text-sm text-gray-600">
+      <span className="text-sm text-gray-600 dark:text-gray-300">
         表示文字列は省略されています
       </span>
     </div>

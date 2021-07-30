@@ -13,13 +13,13 @@ export default memo(function ClipboardCopyButton({ text }: { text: string }) {
     <button
       type="button"
       onClick={onClickCopy}
-      className="inline-flex items-center px-2 py-1 border-none  shadow-sm text-sm leading-4 font-medium rounded-sm hover:bg-pink-100"
+      className="inline-flex items-center px-2 py-1 border-none shadow-sm text-sm leading-4 font-medium rounded-sm hover:bg-pink-100 dark:hover:bg-pink-900"
     >
       <ClipboardCopyIcon
         className="-ml-0.5 mr-1 h-4 w-4 text-pink-500"
         aria-hidden="true"
       />
-      <span className="text-gray-600">COPY</span>
+      <span className="text-gray-600 dark:text-gray-300">COPY</span>
     </button>
   );
 });

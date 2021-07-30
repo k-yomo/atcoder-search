@@ -4,5 +4,6 @@
 @tailwind utilities;
 
 body {
-  @apply text-gray-700
+  @apply text-gray-700;
+  @apply dark:text-gray-300;
 }

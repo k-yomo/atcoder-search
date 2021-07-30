@@ -2,7 +2,7 @@ import React, { memo } from 'react';
 
 export default memo(function PageLoading() {
   return (
-    <div className="m-2 text-sm text-gray-700">
+    <div className="m-2 text-sm text-gray-700 dark:text-gray-400">
       <svg
         fill="none"
         className="w-16 h-16 animate-spin"
