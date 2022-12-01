@@ -11,7 +11,7 @@
     "fmtcheck": "prettier --check **/*.{ts,tsx}"
   },
   "dependencies": {
-    "@headlessui/react": "^1.4.1",
+    "@headlessui/react": "^1.7.4",
     "@heroicons/react": "^1.0.5",
     "fuse.js": "^6.4.6",
     "isomorphic-unfetch": "^3.1.0",
